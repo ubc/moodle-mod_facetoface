@@ -263,7 +263,12 @@ if ($canviewattendees || $cantakeattendance) {
                     $table->align[] = 'center';
                 }
             }
-
+            $table->head[] = "Email";
+            $table->align[] = 'center';
+            $table->head[] = "Position";
+            $table->align[] = 'center';
+            $table->head[] = "Department";
+            $table->align[] = 'center';
             $table->head[] = get_string('attendance', 'facetoface');
             $table->align[] = 'center';
         }
@@ -272,6 +277,9 @@ if ($canviewattendees || $cantakeattendance) {
             $data = array();
             $attendeeurl = new moodle_url('/user/view.php', array('id' => $attendee->id, 'course' => $course->id));
             $data[] = html_writer::link($attendeeurl, format_string(fullname($attendee)));
+            $data[] = $attendee->email;
+            $data[] = $attendee->userposition;
+            $data[] = $attendee->userdept;
 
             if ($takeattendance) {
 

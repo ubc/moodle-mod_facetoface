@@ -1111,6 +1111,8 @@ function facetoface_get_attendees($sessionid) {
         SELECT u.id, {$usernamefields},
             u.email,
             su.id AS submissionid,
+            u.firstname,
+            u.lastname,
             s.discountcost,
             su.discountcode,
             su.notificationtype,
@@ -1118,7 +1120,11 @@ function facetoface_get_attendees($sessionid) {
             f.course,
             ss.grade,
             ss.statuscode,
-            sign.timecreated
+            sign.timecreated,
+            udept.data AS userdept,
+            udept.fieldid,
+            uposition.data AS userposition,
+            uposition.fieldid
         FROM
             {facetoface} f
         JOIN
@@ -1127,6 +1133,12 @@ function facetoface_get_attendees($sessionid) {
         JOIN
             {facetoface_signups} su
          ON s.id = su.sessionid
+        JOIN
+           {user_info_data} uposition
+         ON  su.userid = uposition.userid
+        JOIN
+           {user_info_data} udept
+         ON  su.userid = udept.userid
         JOIN
             {facetoface_signups_status} ss
          ON su.id = ss.signupid
@@ -1154,7 +1166,10 @@ function facetoface_get_attendees($sessionid) {
             s.id = ?
         AND ss.superceded != 1
         AND ss.statuscode >= ?
+        AND udept.fieldid = 1
+        AND uposition.fieldid = 3
         ORDER BY
+            u.lastname ASC,
             sign.timecreated ASC,
             ss.timecreated ASC
     ", array ($sessionid, MDL_F2F_STATUS_BOOKED, MDL_F2F_STATUS_WAITLISTED, $sessionid, MDL_F2F_STATUS_APPROVED));
